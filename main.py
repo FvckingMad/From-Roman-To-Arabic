@@ -14,6 +14,8 @@ forbidden_symbols = {'IIII', 'VV', 'XXXX', 'LL', 'CCCC', 'DD', 'MMMM',
                      'LC', 'LD', 'LM',
                      'DM'
                      }
+
+
 def test_errors(s, mode):
     if mode == 1:
         if len(s) == 0 or s[0] == ' ' or s[0] == '\t':
@@ -21,19 +23,24 @@ def test_errors(s, mode):
         for symbol in s:
             if symbol not in roman_symbols.keys():
                 if symbol == ' ' or symbol == '\t':
-                    return f'Ошибка: недопустимый символ - <пробел>'
+                    return 'Ошибка: недопустимый символ - <пробел>'
                 return f'Ошибка: недопустимый символ - "{symbol}"'
         for symbols in forbidden_symbols:
             if symbols in s:
                 return f'Ошибка: недопустимое сочетание символов - "{symbols}"'
     if mode == 2:
-        try: int(s)
-        except:
-            return f'Ошибка: введённое значение не является натуральным числом'
+        try:
+            int(s)
+        except Exception:
+            return 'Ошибка: введённое значение не является натуральным числом'
         if int(s) not in range(1, 4000):
-            return f'Ошибка: число {s} не входит в допустимый диапазон [1 - 3999]'
+            return f'''Ошибка: число {s} не входит
+            в допустимый диапазон [1 - 3999]'''
+
+
 def roman_to_int(s):
-    if test_errors(s, mode = 1) is not None: return test_errors(s, mode = 1)
+    if test_errors(s, mode=1) is not None:
+        return test_errors(s, mode=1)
     for i in s:
         s = s.replace(i, str(roman_symbols[i]) + ' ')
     s_list = [int(i) for i in s.split()]
@@ -42,10 +49,14 @@ def roman_to_int(s):
             while s_list[i] < s_list[i + 1]:
                 s_list[i + 1] = s_list[i + 1] - s_list[i]
                 s_list.pop(i)
-        except: pass
+        except Exception:
+            pass
     return sum(s_list)
+
+
 def int_to_roman(s):
-    if test_errors(s, mode = 2) is not None: return test_errors(s, mode = 2)
+    if test_errors(s, mode=2) is not None:
+        return test_errors(s, mode=2)
     s = int(s)
     output = ''
     count_digits = {
@@ -64,25 +75,28 @@ def int_to_roman(s):
         1: [0, 'I']
     }
     for i in count_digits.keys():
-            while s // i > 0:
-                count_digits[i][0] += 1
-                s = s - i
-    for i in count_digits.values(): output += i[1] * i[0]
+        while s // i > 0:
+            count_digits[i][0] += 1
+            s = s - i
+    for i in count_digits.values():
+        output += i[1] * i[0]
     return output
+
+
 def menu():
     print('Возможные действия:')
     print('1) Из римского в арабское')
     print('2) Из арабского в римское')
     print('3) Выход')
-    print('Выберите действие: ', end = '')
+    print('Выберите действие: ', end='')
     s = input()
     if s == '1':
-        print('Введите число римскими цифрами: ', end = '')
+        print('Введите число римскими цифрами: ', end='')
         roman = input()
         print(roman_to_int(roman))
         print()
     elif s == '2':
-        print('Введите число: ', end = '')
+        print('Введите число: ', end='')
         arabic = input()
         print(int_to_roman(arabic))
         print()
@@ -91,6 +105,7 @@ def menu():
         return False
     else:
         print()
+
 
 while True:
     if menu() is False:
